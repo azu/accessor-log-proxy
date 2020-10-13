@@ -32,8 +32,8 @@ console.log(accessSet); // => Set{ "a", "a.b", "a.b.c" }
 
 ### Browser
 
-````js
-import { createProxy } from "accessor-log-proxy";
+```js
+const { createProxy } = await import("https://cdn.skypack.dev/accessor-log-proxy");
 const object = {
     a: {
         b: {
@@ -43,7 +43,7 @@ const object = {
 };
 const { accessSet, proxyObject } = createProxy(object);
 // Accecs
-proxyObject.a.b.c
+console.log(proxyObject.a.b.c);
 // Log
 console.log(accessSet); // => Set{ "a", "a.b", "a.b.c" }
 ```
