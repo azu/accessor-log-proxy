@@ -1,12 +1,20 @@
 import { isPlainObject } from "./isPlainObject";
 
+export type createProxyOptions = {
+    log: (keyStack: string[], value?: any) => void;
+};
 /**
  * create proxy object for `object`
  * @param object
+ * @param options
  */
-export const createProxy = <T extends object>(object: T): { proxyObject: T; accessSet: Set<string> } => {
+export const createProxy = <T extends object>(
+    object: T,
+    options?: createProxyOptions
+): { proxyObject: T; accessSet: Set<string> } => {
     const accessSet = new Set<string>();
-    const log = (keyStack: string[]) => {
+    const log = (keyStack: string[], value: any) => {
+        options?.log?.(keyStack, value);
         accessSet.add(keyStack.join("."));
     };
     const innerProxy = <T extends object>(object: T, keyStack: string[] = []): T => {
@@ -21,7 +29,7 @@ export const createProxy = <T extends object>(object: T): { proxyObject: T; acce
                 const isObjectLiteral = isPlainObject(childTarget);
                 const currentKey = String(key);
                 const currentKeyStack = keyStack.concat(currentKey);
-                log(currentKeyStack);
+                log(currentKeyStack, childTarget);
                 if (childTarget !== null && isObjectLiteral) {
                     return innerProxy(childTarget, currentKeyStack);
                 }
