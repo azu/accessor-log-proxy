@@ -1,6 +1,6 @@
 # accessor-log-proxy
 
-Access Proxy for a Object.
+Access Proxy for an Object.
 
 ## Feature
 
