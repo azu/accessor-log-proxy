@@ -48,6 +48,16 @@ console.log(proxyObject.a.b.c);
 console.log(accessSet); // => Set{ "a", "a.b", "a.b.c" }
 ```
 
+## Options
+
+```ts
+export type createProxyOptions = {
+    log?: (keyStack: string[], value?: any) => void;
+    // include prototype property like "hasOwnProperty"
+    // default: true
+    includePrototypeProperties?: boolean;
+};
+```
 
 ## Changelog
 

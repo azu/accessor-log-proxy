@@ -1,7 +1,8 @@
 import { isPlainObject } from "./isPlainObject";
 
 export type createProxyOptions = {
-    log: (keyStack: string[], value?: any) => void;
+    log?: (keyStack: string[], value?: any) => void;
+    includePrototypeProperties?: boolean;
 };
 /**
  * create proxy object for `object`
@@ -13,6 +14,7 @@ export const createProxy = <T extends object>(
     options?: createProxyOptions
 ): { proxyObject: T; accessSet: Set<string> } => {
     const accessSet = new Set<string>();
+    const includePrototypeProperties = options?.includePrototypeProperties ?? true;
     const log = (keyStack: string[], value: any) => {
         options?.log?.(keyStack, value);
         accessSet.add(keyStack.join("."));
@@ -29,6 +31,9 @@ export const createProxy = <T extends object>(
                 const isObjectLiteral = isPlainObject(childTarget);
                 const currentKey = String(key);
                 const currentKeyStack = keyStack.concat(currentKey);
+                if (!includePrototypeProperties && !Object.prototype.hasOwnProperty.call(object, key)) {
+                    return childTarget;
+                }
                 log(currentKeyStack, childTarget);
                 if (childTarget !== null && isObjectLiteral) {
                     return innerProxy(childTarget, currentKeyStack);
